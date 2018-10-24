@@ -1,7 +1,7 @@
 module Main where
 
 import Prelude ((+), (*))
-import Control.Monad.Eff.Console (logShow)
+import Effect.Console (logShow)
 import Math (sqrt)
 
 diagonal :: Number -> Number -> Number
