@@ -2,22 +2,22 @@ module Example.Rectangle where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
+import Effect (Effect)
 import Data.Maybe (Maybe(..))
-import Graphics.Canvas (CANVAS, rect, fillPath, setFillStyle, getContext2D,
+import Graphics.Canvas (rect, fillPath, setFillStyle, getContext2D,
                         getCanvasElementById)
 import Partial.Unsafe (unsafePartial)
 
-main :: Eff (canvas :: CANVAS) Unit
+main :: Effect Unit
 main = void $ unsafePartial do
   Just canvas <- getCanvasElementById "canvas"
   ctx <- getContext2D canvas
 
-  _ <- setFillStyle "#0000FF" ctx
+  _ <- setFillStyle ctx "#0000FF"
 
   fillPath ctx $ rect ctx
     { x: 250.0
     , y: 250.0
-    , w: 100.0
-    , h: 100.0
+    , width: 100.0
+    , height: 100.0
     }

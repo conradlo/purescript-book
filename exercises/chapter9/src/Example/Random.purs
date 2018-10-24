@@ -2,23 +2,23 @@ module Example.Random where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Random (RANDOM, random)
+import Effect (Effect)
+import Effect.Random (random)
 import Data.Array ((..))
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
-import Graphics.Canvas (CANVAS, strokePath, fillPath, arc, setStrokeStyle,
-                        setFillStyle, getContext2D, getCanvasElementById)
+import Graphics.Canvas (strokePath, fillPath, arc, setStrokeStyle, setFillStyle,
+                        getContext2D, getCanvasElementById)
 import Math as Math
 import Partial.Unsafe (unsafePartial)
 
-main :: Eff (canvas :: CANVAS, random :: RANDOM) Unit
+main :: Effect Unit
 main = void $ unsafePartial do
   Just canvas <- getCanvasElementById "canvas"
   ctx <- getContext2D canvas
 
-  _ <- setFillStyle "#FF0000" ctx
-  _ <- setStrokeStyle "#000000" ctx
+  _ <- setFillStyle ctx "#FF0000"
+  _ <- setStrokeStyle ctx "#000000"
 
   for_ (1 .. 100) \_ -> do
     x <- random
@@ -26,11 +26,11 @@ main = void $ unsafePartial do
     r <- random
 
     let path = arc ctx
-         { x     : x * 600.0
-         , y     : y * 600.0
-         , r     : r * 50.0
-         , start : 0.0
-         , end   : Math.pi * 2.0
+         { x      : x * 600.0
+         , y      : y * 600.0
+         , radius : r * 50.0
+         , start  : 0.0
+         , end    : Math.pi * 2.0
          }
 
     _ <- fillPath ctx path
