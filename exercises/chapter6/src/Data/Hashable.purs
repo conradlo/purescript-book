@@ -14,7 +14,7 @@ import Data.Either (Either(..))
 import Data.Foldable (foldl)
 import Data.Function (on)
 import Data.Maybe (Maybe(..))
-import Data.String (toCharArray)
+import Data.String.CodeUnits (toCharArray)
 import Data.Tuple (Tuple(..))
 
 newtype HashCode = HashCode Int

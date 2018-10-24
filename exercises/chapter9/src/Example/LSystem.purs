@@ -4,8 +4,8 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 import Data.Array (concatMap, foldM)
-import Control.Monad.Eff (Eff)
-import Graphics.Canvas (CANVAS, strokePath, setStrokeStyle, lineTo, moveTo,
+import Effect (Effect)
+import Graphics.Canvas (strokePath, setStrokeStyle, lineTo, moveTo,
                         getContext2D, getCanvasElementById)
 import Math as Math
 import Partial.Unsafe (unsafePartial)
@@ -31,7 +31,7 @@ type State =
   , theta :: Number
   }
 
-main :: Eff (canvas :: CANVAS) Unit
+main :: Effect Unit
 main = void $ unsafePartial do
   Just canvas <- getCanvasElementById "canvas"
   ctx <- getContext2D canvas
@@ -45,7 +45,7 @@ main = void $ unsafePartial do
     productions R = [R]
     productions F = [F, L, F, R, R, F, L, F]
 
-    interpret :: State -> Alphabet -> Eff (canvas :: CANVAS) State
+    interpret :: State -> Alphabet -> Effect State
     interpret state L = pure $ state { theta = state.theta - Math.pi / 3.0 }
     interpret state R = pure $ state { theta = state.theta + Math.pi / 3.0 }
     interpret state F = do
@@ -58,6 +58,6 @@ main = void $ unsafePartial do
     initialState :: State
     initialState = { x: 120.0, y: 200.0, theta: 0.0 }
 
-  _ <- setStrokeStyle "#000000" ctx
+  _ <- setStrokeStyle ctx "#000000"
 
   strokePath ctx $ lsystem initial productions interpret 5 initialState

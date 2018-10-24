@@ -2,10 +2,10 @@ module Test.Main where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, logShow)
+import Effect (Effect)
+import Effect.Console (logShow)
 import Data.AddressBook (examplePerson)
 import Data.AddressBook.Validation (validatePerson)
 
-main :: Eff (console :: CONSOLE) Unit
+main :: Effect Unit
 main = logShow (validatePerson examplePerson)

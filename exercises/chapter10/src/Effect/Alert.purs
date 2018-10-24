@@ -1,8 +1,8 @@
-module Control.Monad.Eff.Alert where
+module Effect.Alert where
 
 import Prelude
 
-import Control.Monad.Eff (kind Effect, Eff)
+import Effect (kind Effect, Effect)
 
 foreign import data ALERT :: Effect
 
