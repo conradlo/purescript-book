@@ -1,8 +1,7 @@
 
 This is a fork of the text and exercises for the PureScript book written by Phil Freeman
 
-The repo on which this is based is the content behind the "PureScript by Example" book, available on Leanpub: https://leanpub.com/purescript
-Its license on Leanpub is [CreativeCommons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US), which is a license allowing remixes for non-commercial purposes with attribution to the original work. This license should permit this fork to exist and be maintained.
+[The original work's license](https://github.com/paf31/purescript-book/blob/master/text/LICENSE) is [CreativeCommons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US).
 
 # Changes
 - migrate to purescript 0.12 and use psc-package
