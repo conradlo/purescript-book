@@ -2,10 +2,7 @@ module Test.Main where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE)
-import Control.Monad.Eff.Exception (EXCEPTION)
-import Control.Monad.Eff.Random (RANDOM)
+import Effect (Effect)
 import Data.Array (sortBy, intersect)
 import Data.Foldable (foldr)
 import Data.Function (on)
@@ -25,18 +22,15 @@ isSubarrayOf :: forall a. (Eq a) => Array a -> Array a -> Boolean
 isSubarrayOf xs ys = xs `intersect` ys == xs
 
 ints :: Array Int -> Array Int
-ints = id
+ints = identity
 
 intToBool :: (Int -> Boolean) -> Int -> Boolean
-intToBool = id
+intToBool = identity
 
 treeOfInt :: Tree Number -> Tree Number
-treeOfInt = id
+treeOfInt = identity
 
-main :: Eff ( console :: CONSOLE
-            , random :: RANDOM
-            , exception :: EXCEPTION
-            ) Unit
+main :: Effect Unit
 main = do
   -- Tests for module 'Merge'
 

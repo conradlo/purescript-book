@@ -72,7 +72,7 @@ class IsValue a where
   toValue :: a -> String
 
 instance stringIsValue :: IsValue String where
-  toValue = id
+  toValue = identity
 
 instance intIsValue :: IsValue Int where
   toValue = show

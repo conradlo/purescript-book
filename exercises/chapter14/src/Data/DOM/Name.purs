@@ -74,13 +74,13 @@ elem :: Element -> Content Unit
 elem e = liftF $ ElementContent e unit
 
 newName :: Content Name
-newName = liftF $ NewName id
+newName = liftF $ NewName identity
 
 class IsValue a where
   toValue :: a -> String
 
 instance stringIsValue :: IsValue String where
-  toValue = id
+  toValue = identity
 
 instance intIsValue :: IsValue Int where
   toValue = show

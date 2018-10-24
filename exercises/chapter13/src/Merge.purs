@@ -8,7 +8,7 @@ merge :: Array Int -> Array Int -> Array Int
 merge = mergePoly
 
 mergePoly :: forall a. Ord a => Array a -> Array a -> Array a
-mergePoly = mergeWith id
+mergePoly = mergeWith identity
 
 mergeWith :: forall a b. Ord b => (a -> b) -> Array a -> Array a -> Array a
 mergeWith f = \xs ys ->
