@@ -8,6 +8,7 @@
     "lists",
     "strings",
     "foreign",
+    "foreign-generic",
     "web-html",
     "react",
     "react-dom"
