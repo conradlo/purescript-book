@@ -2,8 +2,9 @@ module Exercise where
 
 import Prelude
 
-import Data.Array ((:))
+import Data.Array ((:), nubByEq, length)
 import Data.Foldable (class Foldable, foldr, foldl, maximum)
+import Data.Hashable (class Hashable, hashEqual, hashCode)
 import Data.Maybe (fromJust)
 
 -- 6.4 Ex 1
@@ -217,4 +218,68 @@ instance actOnSelf :: Monoid m => Action m (Self m) where
     Exercise.actOnArray
     Exercise.actOnSelf
   
+-}
+
+-- 6.12 Ex 2
+{-
+  Use the `hashEqual` function to write a function which tests if an array has any duplicated elements,
+  using hash-equality as an approximation to value equality.
+  
+  Remember to check for value equality using `==` if a duplicate pair is found.
+  Hint: the `nubBy` function in `Data.Array` should make this task much simpler.
+-}
+
+removeDuplicate :: forall a. Hashable a => Array a -> Array a
+removeDuplicate = nubByEq hashEqual
+
+hasDuplicate :: forall a. Hashable a => Array a -> Boolean
+hasDuplicate arr = (length $ removeDuplicate arr) < (length arr)
+
+
+-- 6.12 Ex 3
+-- Write a `Hashable` instance for the following newtype which satisfies the type class law:
+
+newtype Hour = Hour Int
+  
+instance eqHour :: Eq Hour where
+  eq (Hour n) (Hour m) = mod n 12 == mod m 12
+
+{-
+  The newtype Hour and its Eq instance represent the type of integers modulo 12,
+  so that 1 and 13 are identified as equal, for example.
+  Prove that the type class law holds for your instance.
+-}
+
+instance hashHour :: Hashable Hour where
+  hash (Hour h) = hashCode (mod h 12)
+{-
+(Hour 1) == (Hour 13) : true
+hash (Hour 1) == hash (Hour 13) : true
+-}
+
+-- 6.12 Ex 4
+-- Prove the type class laws for the `Hashable` instances for `Maybe`, `Either` and `Tuple`.
+
+{-
+
+- Maybe
+hash Nothing == hash Nothing , trivial
+hash (Just a) == hash (Just b) iff hash a == hash b for some a == b, i.e. a, b are Hashable
+since a, b are Hashable becos `hashMaybe :: Hashable a => Hashable (Maybe a)`,
+the law holds
+
+- Tuple
+hash (Tuple a b) == hash (Tuple c d) iff hash a == hash c, hash b == hash d, for some a == c && b == d
+the law holds since `combineHashes` is deterministic. hashTuple : hash (Tuple a b) = hash a `combineHashes` hash b
+
+- Either
+  hash (Left a) == hash (Left b) iff hash a == hash b for some a == b, since `combineHashes` is deterministic.
+  in `hashEither`, case of hash (Left a) = hashCode 0 `combineHashes` hash a
+  the `Left` side holds
+
+  hash (Left c) == hash (Left d) iff hash c == hash d for some c == d, since `combineHashes` is deterministic.
+  in `hashEither`, case of hash (Right b) = hashCode 1 `combineHashes` hash b
+  the `Right` side holds
+
+  therefore, the law holds for `Either a b` for Hashable a, b
 -}
