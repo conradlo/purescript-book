@@ -1,6 +1,8 @@
 
 This is a fork of the text and exercises for the PureScript book written by Phil Freeman
 
+[The original work's license](https://github.com/paf31/purescript-book/blob/master/text/LICENSE) is [CreativeCommons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US).
+
 # Changes
 - migrate to purescript 0.12 and use psc-package
   - thanks to https://github.com/paf31/purescript-book/pull/135
