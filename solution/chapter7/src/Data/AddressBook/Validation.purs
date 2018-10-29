@@ -72,7 +72,7 @@ validatePerson :: Person -> V Errors Person
 validatePerson (Person o) =
   person <$> (nonEmpty "First Name" o.firstName *> pure o.firstName)
          <*> (nonEmpty "Last Name"  o.lastName  *> pure o.lastName)
-         <*> validateAddress o.homeAddress
+         <*> traverse validateAddress o.homeAddress -- 7.11 Ex 2
          <*> (arrayNonEmpty "Phone Numbers" o.phones *> traverse validatePhoneNumber o.phones)
 
 validatePerson' :: Person -> Either Errors Person
