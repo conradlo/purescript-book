@@ -3,7 +3,9 @@ module Exercise where
 import Prelude
 
 import Control.Apply (lift2)
+import Data.Foldable (class Foldable, foldr, foldl)
 import Data.Maybe (Maybe(..))
+import Data.Traversable (class Traversable, traverse, sequence)
 
 -- 7.8 Ex 1
 {-
@@ -75,3 +77,49 @@ combineMaybe (Just fa) = Just <$> fa
   Using the `matches` validator, write a validation function which checks that a string is not entirely whitespace.
   Use it to replace `nonEmpty` where appropriate.
 -}
+
+-- 7.11 Ex 1
+{-
+  Write a `Traversable` instance for the following binary tree data structure,
+  which combines side-effects from left-to-right:
+-}
+data Tree a = Leaf | Branch (Tree a) a (Tree a)
+
+-- 1. to make `Traversable Tree` must first implement `Functor Tree` & `Foldable Tree`
+instance mapTree :: Functor Tree where
+  map :: forall a b. (a -> b) -> Tree a -> Tree b
+  map _ Leaf = Leaf
+  map f (Branch left a right) = Branch (map f left) (f a) (map f right)
+
+instance foldableTree :: Foldable Tree where
+  foldr :: forall a b. (a -> b -> b) -> b -> Tree a -> b
+  foldr _ b Leaf = b
+  foldr f b (Branch left a right) = foldr f (foldr f b left) (Branch Leaf a right)
+  foldl :: forall a b. (b -> a -> b) -> b -> Tree a -> b
+  foldl _ b Leaf = b
+  foldl f b (Branch left a right) = foldl f (foldl f b left) (Branch Leaf a right)
+  foldMap :: forall a m. Monoid m => (a -> m) -> Tree a -> m
+  foldMap f Leaf = mempty
+  foldMap f treeA = foldl append mempty (map f treeA)
+
+
+instance traverseTree :: Traversable Tree where
+  traverse :: forall a b f. Applicative f => (a -> f b) -> Tree a -> f (Tree b)
+  traverse _ Leaf = pure Leaf
+  traverse f (Branch leftChild a rightChild) = Branch <$> traverse f leftChild <*> f a <*> traverse f rightChild
+  sequence :: forall a f. Applicative f => Tree (f a) -> f (Tree a)
+  sequence Leaf = pure Leaf
+  sequence (Branch leftChild fa rightChild) = Branch <$> sequence leftChild <*> fa <*> sequence rightChild
+
+-- This corresponds to an in-order traversal of the tree.
+-- What about a preorder traversal? What about reverse order?
+-- 1. preorder traversal: process current value first, then left child then right child
+-- 2. reverse order: process right child first, then current value, lastly left
+-- 3. TODO How to implement? should `Functor Tree`, `Foldable Tree`, `Traversable Tree` be all different?
+
+-- 7.11 Ex 2
+{-
+  Modify the code to make the `address` field of the Person type optional using `Data.Maybe`.
+  Hint: Use `traverse` to validate a field of type `Maybe a`.
+-}
+-- see Data.AddressBook.Validation
