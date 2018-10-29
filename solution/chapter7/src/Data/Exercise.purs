@@ -123,3 +123,41 @@ instance traverseTree :: Traversable Tree where
   Hint: Use `traverse` to validate a field of type `Maybe a`.
 -}
 -- see Data.AddressBook.Validation
+
+-- 7.11 Ex 3
+{-
+  Try to write `sequence` in terms of `traverse`.
+  Can you write `traverse` in terms of `sequence`?
+-}
+
+{- `Traversable` type class
+class (Functor t, Foldable t) <= Traversable t where
+  traverse :: forall a b f. Applicative f => (a -> f b) -> t a -> f (t b)
+  sequence :: forall a f. Applicative f => t (f a) -> f (t a)
+-}
+
+{-
+  1. Try to write `sequence` in terms of `traverse`.
+  i. sub a as b
+  sequence :: forall b f. Applicative f => t (f b) -> f (t b)
+  ii. sub a as (f b)
+  sequence :: forall b f. Applicative f => t a -> f (t b)
+
+  there for
+  sequence == traverse (a -> f b) where a is (f b) for some function (f b -> f b), i.e. identity
+  
+  write `sequence` in terms of `traverse`
+  sequence = traverse identity
+-}
+
+{-
+  2. Can you write `traverse` in terms of `sequence`?
+
+  `traverse` takes an function (a -> f b) and apply to some `Traversable a` and gives a `f (Traversable b)`
+  `sequence` takes some `Traversable (f a)` and gives `f (Traversable a)`
+
+  if we first map a function of (a -> f b) to some `Traversable a` we get `Traversable (f b)`
+  then we gives `sequence` a `Traversable (f b)` we get `f (Traversable b)` which is the same as `traverse` function
+
+  traverse f = (sequence <<< map f)
+-}
