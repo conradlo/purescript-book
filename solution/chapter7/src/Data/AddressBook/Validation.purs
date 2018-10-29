@@ -30,15 +30,38 @@ phoneNumberRegex =
     case regex "^\\d{3}-\\d{3}-\\d{4}$" noFlags of
       Right r -> r
 
+-- 7.10 Ex 1
+{-
+  Use a regular expression validator to ensure that the `state` field of the `Address` type
+  contains two alphabetic characters.
+  Hint: see the source code for `phoneNumberRegex`
+-}
+stateRegex :: Regex
+stateRegex =
+  unsafePartial
+    case regex "^[a-zA-Z]{2}$" noFlags of
+      Right r -> r
+
+-- 7.10 Ex 2
+{-
+  Using the `matches` validator, write a validation function which checks that a string is not entirely whitespace.
+  Use it to replace `nonEmpty` where appropriate.
+-}
+nonWhitespaceRegex :: Regex
+nonWhitespaceRegex =
+  unsafePartial
+    case regex "\\S+" noFlags of
+      Right r -> r
+
 matches :: String -> Regex -> String -> V Errors Unit
 matches _     regex value | test regex value = pure unit
 matches field _     _     = invalid ["Field '" <> field <> "' did not match the required format"]
 
 validateAddress :: Address -> V Errors Address
 validateAddress (Address o) =
-  address <$> (nonEmpty "Street" o.street *> pure o.street)
-          <*> (nonEmpty "City"   o.city   *> pure o.city)
-          <*> (lengthIs "State" 2 o.state *> pure o.state)
+  address <$> (matches "Street" nonWhitespaceRegex o.street *> pure o.street) -- 7.10 Ex 2
+          <*> (matches "City"   nonWhitespaceRegex o.city   *> pure o.city) -- 7.10 Ex 2
+          <*> (matches "State" stateRegex o.state *> pure o.state) -- 7.10 Ex 1
 
 validatePhoneNumber :: PhoneNumber -> V Errors PhoneNumber
 validatePhoneNumber (PhoneNumber o) =

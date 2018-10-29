@@ -60,3 +60,18 @@ div' = lift2 (/)
 combineMaybe :: forall a f. Applicative f => Maybe (f a) -> f (Maybe a)
 combineMaybe Nothing = pure Nothing
 combineMaybe (Just fa) = Just <$> fa
+
+-- 7.10 Ex 1
+{-
+  Use a regular expression validator to ensure that the `state` field of the `Address` type
+  contains two alphabetic characters.
+  Hint: see the source code for `phoneNumberRegex`
+-}
+-- see Data.AddressBook.Validation.purs
+
+
+-- 7.10 Ex 2
+{-
+  Using the `matches` validator, write a validation function which checks that a string is not entirely whitespace.
+  Use it to replace `nonEmpty` where appropriate.
+-}
