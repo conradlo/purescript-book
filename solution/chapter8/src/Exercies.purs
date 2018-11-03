@@ -123,3 +123,31 @@ safeDivide a b = Just (a / b)
 
 predicate :: Int -> Maybe Boolean
 predicate i = even <$> safeDivide i (i - 3)
+
+-- 8.7 Ex 6
+{-
+  Use the monad laws to prove that for any monad, the following holds:
+  `lift2 f (pure a) (pure b) = pure (f a b)`
+-}
+
+{-
+ LHS
+  lift2 f (pure a) (pure b) ,for some f :: a -> b -> c
+  => f <$> (pure a) <*> (pure b)
+  => (map f (pure a)) <*> (pure b)
+    by Functor instance of monad we get:
+  => pure (f a) <*> (pure b)
+    where (f a) :: b -> c, therefore pure (f a) :: Monad (b -> c)
+    <*> == apply
+  => apply (pure (f a)) (pure b)
+    apply == ap for monads
+  => ap (pure (f a)) (pure b), pure (f a) :: Monad (b -> c), pure b :: Monad b
+    by implementation of ap, ap (pure (f a)) (pure b) equals:
+  => pure (c)
+
+ RHS
+  pure (f a b), for some f :: a -> b -> c
+  => pure (c)
+  => LHS
+
+-}
