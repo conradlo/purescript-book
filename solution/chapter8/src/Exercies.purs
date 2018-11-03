@@ -1,11 +1,13 @@
 module Exercise where
 
+import Effect (Effect)
 import Prelude
 
 import Data.Array as Array
 import Data.Int (even)
 import Data.List as List
 import Data.Maybe (Maybe(..))
+import Effect.Exception (error, throwException)
 
 -- 8.7 Ex 1
 {-
@@ -151,3 +153,12 @@ predicate i = even <$> safeDivide i (i - 3)
   => LHS
 
 -}
+
+-- 8.17 Ex 1
+{-
+  Rewrite the `safeDivide` function to throw an exception
+  using `throwException` if the denominator is zero.
+-}
+safeDivide' :: Int -> Int -> Effect Int
+safeDivide' _ 0 = throwException $ error "Expected a non-zero integer"
+safeDivide' a b = pure (a / b)
