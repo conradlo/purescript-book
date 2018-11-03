@@ -45,6 +45,7 @@ examplePerson =
          (address "123 Fake St." "FakeTown" "CA")
          [ phoneNumber HomePhone "555-555-5555"
          , phoneNumber CellPhone "555-555-0000"
+         , phoneNumber WorkPhone "666-555-0000"
          ]
 
 instance showAddress :: Show Address where

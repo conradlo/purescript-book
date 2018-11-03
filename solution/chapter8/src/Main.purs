@@ -4,18 +4,18 @@ import Prelude
 
 import Control.Monad.Except (runExcept)
 import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), examplePerson)
-import Data.AddressBook.Validation (Errors, validatePerson')
+import Data.AddressBook.Validation (Errors, Field(..), ValidationError(..), getErrorMessage, validatePerson')
 import Data.Array ((..), length, modifyAt, zipWith)
 import Data.Either (Either(..))
-import Data.Foldable (for_)
+import Data.Foldable (for_, find)
 import Data.List.NonEmpty (NonEmptyList)
-import Data.Maybe (fromJust, fromMaybe)
+import Data.Maybe (Maybe(..), fromJust, fromMaybe)
 import Effect (Effect)
 import Effect.Console (log)
 import Foreign (ForeignError, readString, unsafeToForeign)
 import Foreign.Index (index)
 import Partial.Unsafe (unsafePartial)
-import React (ReactClass, ReactThis)
+import React (ReactClass, ReactThis, ReactElement)
 import React as React
 import React.DOM as D
 import React.DOM.Props as P
@@ -60,19 +60,15 @@ updateAppState this update e =
 addressBook :: ReactClass { }
 addressBook = React.component "AddressBook" component
   where
+  component :: forall props. (ReactThis props AppState) -> Effect {state :: AppState , render :: Effect ReactElement}
   component this =
     pure { state: initialState
          , render: render <$> React.getState this
          }
     where
     render { person: Person person@{ homeAddress: Address address }, errors } =
-      let renderValidationError err = D.li' [ D.text err ]
-          renderValidationErrors [] = []
-          renderValidationErrors xs =
-            [ D.div
-              [ P.className "alert alert-danger" ]
-              [ D.ul' (map renderValidationError xs) ]
-            ]
+      let renderValidationError validationError = D.div [ P.className "alert alert-danger" ] [ D.text (getErrorMessage validationError) ]
+          -- renderValidationErrors xs = map renderValidationError xs
 
           formField name hint value update =
             D.div
@@ -104,22 +100,32 @@ addressBook = React.component "AddressBook" component
           updateState  s = Person $ person { homeAddress = Address $ address { state  = s } }
 
           updatePhoneNumber s (PhoneNumber o) = PhoneNumber $ o { number = s }
+
+          renderValidationErrorForField field = let error = find (\(ValidationError _ field') -> field == field' ) errors
+            in case error of
+              Nothing -> D.div [] []
+              Just (ValidationError msg _) -> D.div [ P.className "alert alert-danger col-sm-3" ] [ D.text msg ]
       in
         D.div
         [ P.className "container" ]
         [ D.div
           [ P.className "row" ]
-          (renderValidationErrors errors)
+          [] -- (renderValidationErrors errors)
         , D.div
           [ P.className "row" ]
           [ D.form
             [ P.className "form-horizontal" ] $
             [ D.h3'[ D.text "Basic Information" ]
+            , renderValidationErrorForField FirstNameField
             , formField "First Name" "First Name" person.firstName updateFirstName
+            , renderValidationErrorForField LastNameField
             , formField "Last Name"  "Last Name"  person.lastName  updateLastName
             , D.h3' [ D.text "Address" ]
+            , renderValidationErrorForField StreetField
             , formField "Street" "Street" address.street updateStreet
+            , renderValidationErrorForField CityField
             , formField "City"   "City"   address.city   updateCity
+            , renderValidationErrorForField StateField
             , formField "State"  "State"  address.state  updateState
             , D.h3' [ D.text "Contact Information" ]
             ] <> zipWith renderPhoneNumber person.phones (0 .. length person.phones)
