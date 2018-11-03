@@ -6,8 +6,16 @@
   "private": true,
   "author": "Phil Freeman",
   "license": "Creative,Commons,Attribution-NonCommercial-ShareAlike,4.0,International,License",
+  "scripts": {
+    "build": "pulp browserify --to html/dist/Main.js",
+    "dev:server": "node server.js",
+    "dev:watch": "pulp -w browserify --to html/dist/Main.js"
+  },
   "dependencies": {
     "react": "^0.14.8",
     "react-dom": "^0.14.6"
+  },
+  "devDependencies": {
+    "express": "^4.16.4"
   }
 }

@@ -162,3 +162,6 @@ predicate i = even <$> safeDivide i (i - 3)
 safeDivide' :: Int -> Int -> Effect Int
 safeDivide' _ 0 = throwException $ error "Expected a non-zero integer"
 safeDivide' a b = pure (a / b)
+
+-- 8.17 Ex 2
+-- pending
