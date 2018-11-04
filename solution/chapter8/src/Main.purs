@@ -89,8 +89,11 @@ addressBook = React.component "AddressBook" component
             ]
 
           renderPhoneNumber (PhoneNumber phone) index =
-            formField (show phone."type") "XXX-XXX-XXXX" phone.number \s ->
-              Person $ person { phones = fromMaybe person.phones $ modifyAt index (updatePhoneNumber s) person.phones }
+            D.div [] [
+             (formField (show phone."type") "XXX-XXX-XXXX" phone.number \s ->
+              Person $ person { phones = fromMaybe person.phones $ modifyAt index (updatePhoneNumber s) person.phones })
+            , renderValidationErrorForField (PhoneField phone."type")
+            ]
 
           updateFirstName s = Person $ person { firstName = s }
           updateLastName  s = Person $ person { lastName  = s }
@@ -104,7 +107,9 @@ addressBook = React.component "AddressBook" component
           renderValidationErrorForField field = let error = find (\(ValidationError _ field') -> field == field' ) errors
             in case error of
               Nothing -> D.div [] []
-              Just (ValidationError msg _) -> D.div [ P.className "alert alert-danger col-sm-3" ] [ D.text msg ]
+              Just (ValidationError msg _) -> D.div
+                                                [P.className "form-group"]
+                                                [D.div [ P.className "alert alert-danger col-sm-3 col-sm-offset-2" ] [ D.text msg ]]
       in
         D.div
         [ P.className "container" ]
@@ -116,17 +121,17 @@ addressBook = React.component "AddressBook" component
           [ D.form
             [ P.className "form-horizontal" ] $
             [ D.h3'[ D.text "Basic Information" ]
-            , renderValidationErrorForField FirstNameField
             , formField "First Name" "First Name" person.firstName updateFirstName
-            , renderValidationErrorForField LastNameField
+            , renderValidationErrorForField FirstNameField
             , formField "Last Name"  "Last Name"  person.lastName  updateLastName
+            , renderValidationErrorForField LastNameField
             , D.h3' [ D.text "Address" ]
-            , renderValidationErrorForField StreetField
             , formField "Street" "Street" address.street updateStreet
-            , renderValidationErrorForField CityField
+            , renderValidationErrorForField StreetField
             , formField "City"   "City"   address.city   updateCity
-            , renderValidationErrorForField StateField
+            , renderValidationErrorForField CityField
             , formField "State"  "State"  address.state  updateState
+            , renderValidationErrorForField StateField
             , D.h3' [ D.text "Contact Information" ]
             ] <> zipWith renderPhoneNumber person.phones (0 .. length person.phones)
           ]
